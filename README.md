@@ -166,11 +166,13 @@ For more detailed service setup and configuration options, see the [BOM Local Se
        - Play/Pause Button
        - Previous/Next Buttons
        - Frame Slider
-       - Navigation Buttons (-10, +10, First, Last)
+       - Navigation Buttons (skip 1/3 of frames, First, Last)
        - Frame Info
-     - **Overlay Controls on Image**: Toggle to overlay controls on the radar image
-     - **Overlay Position**: Choose overlay position (Top, Bottom, Left, Right, Center)
-     - **Overlay Opacity**: Control overlay transparency (0.0 to 1.0)
+     - **Controls Position**: Choose where to display controls (Above Image, Below Image, Overlay on Image)
+     - When position is "Overlay on Image":
+       - **Controls Overlay Position**: Choose overlay position (Top, Bottom, Left, Right, Center)
+       - **Controls Overlay Opacity**: Control overlay transparency (0.0 to 1.0)
+     - **Conflict Detection**: Editor warns if metadata and controls overlays would conflict
    - **Image Zoom**: Zoom level for radar images (0.5 = 50%, 1.0 = 100%, 2.0 = 200%, range: 0.5-3.0)
    - **Image Fit**: How images fit in container (Contain, Cover, Fill)
    
@@ -182,7 +184,7 @@ For more detailed service setup and configuration options, see the [BOM Local Se
    **Auto Refresh**:
    - **Refresh Interval**: Seconds between automatic data refreshes (default: `30`, range: 10-300)
 
-**Note**: For custom time ranges (using `timespan: custom`), you'll need to configure `custom_start_time` and `custom_end_time` via YAML as these options are not available in the visual editor.
+**Note**: For custom time ranges (using `timespan: custom`), the editor will show input fields for `custom_start_time` and `custom_end_time`. The editor also displays available cache range information and warns if your selected timespan exceeds available data.
 
 ### Using YAML
 
@@ -256,9 +258,11 @@ custom_end_time: "2024-01-15T14:00:00Z"
 | `show_play_pause` | boolean | `true` | Show play/pause button |
 | `show_prev_next` | boolean | `true` | Show previous/next buttons |
 | `show_slider` | boolean | `true` | Show frame slider |
-| `show_nav_buttons` | boolean | `true` | Show navigation buttons (First, -10, +10, Last) |
+| `show_nav_buttons` | boolean | `true` | Show navigation buttons (skip 1/3 of frames, First, Last) |
 | `show_frame_info` | boolean | `true` | Show frame information (frame number, timestamp) |
 | `position` | string | `below` | Where to display: `above`, `below`, or `overlay` |
+
+**Note**: When `position` is set to `overlay`, use the top-level `controls_overlay_position` and `controls_overlay_opacity` options to control overlay placement and transparency.
 
 #### Slideshow Configuration
 
@@ -307,21 +311,26 @@ show_metadata: false
 show_controls: false
 ```
 
-### Overlay Controls on Image
+### Overlay Controls and Metadata on Image
 
-Overlay controls on the radar image to save space:
+Overlay both controls and metadata on the radar image to save space:
 
 ```yaml
 type: custom:bom-local-radar-card
 suburb: Brisbane
 state: QLD
-overlay_controls: true
-overlay_position: bottom
-overlay_opacity: 0.85
+show_controls:
+  position: overlay
+controls_overlay_position: bottom
+controls_overlay_opacity: 0.9
 show_metadata:
   position: overlay
-  style: minimal
+  style: compact
+metadata_overlay_position: top
+metadata_overlay_opacity: 0.85
 ```
+
+**Note**: The editor will warn you if metadata and controls overlays are configured at conflicting positions (e.g., both at "top").
 
 ### Image Zoom
 
@@ -356,7 +365,7 @@ show_metadata:
 
 ### Granular Controls Control
 
-Show only specific controls:
+Show only specific controls and position them above the image:
 
 ```yaml
 type: custom:bom-local-radar-card
@@ -368,6 +377,7 @@ show_controls:
   show_frame_info: true
   show_nav_buttons: false
   show_prev_next: false
+  position: above
 ```
 
 ### Historical Data (Last 3 Hours)
@@ -430,11 +440,11 @@ The card provides several controls for navigating radar frames (all can be indiv
 - **Play/Pause Button**: Start or stop the animation
 - **Previous/Next Buttons**: Navigate to the previous or next frame
 - **Frame Slider**: Drag to jump to any frame
-- **Navigation Buttons**:
+- **Navigation Buttons** (only shown for timeseries data):
   - ⏮ First frame
-  - -10 / +10: Jump backward/forward by 10 frames
+  - -X / +X: Jump backward/forward by approximately 1/3 of total frames (dynamically calculated)
   - ⏭ Last frame
-- **Frame Info**: Displays frame number, total frames, observation time, and progress percentage
+- **Frame Info**: Compact display showing frame number, total frames, observation time, and progress percentage in a single line
 
 ### Keyboard Navigation
 
@@ -594,49 +604,6 @@ To test the card against a local version of the BOM Local Service (instead of th
 
 This builds the service from your local source and uses it in the test environment.
 
-## Changelog
-
-### Version 0.1.0 (Current)
-
-**Major Improvements:**
-- ✨ **Enhanced Error Handling**: Full support for structured API error responses with detailed error codes, retry suggestions, and intelligent auto-retry functionality
-- 🔄 **Smart Retry Logic**: Action-based retry behavior - respects service recommendations for when to auto-retry vs. manual refresh
-- 🎨 **Redesigned Editor**: Complete overhaul of the visual editor with native dropdowns, better layout, and expandable sections
-- 🖼️ **Image Display Fixes**: Fixed image centering issues and added zoom/fit options
-- 🎛️ **Granular Configuration**: Fine-grained control over metadata and controls visibility
-- 📍 **Overlay Support**: Overlay controls and metadata on images to save dashboard space
-- ⌨️ **Keyboard Navigation**: Full keyboard support for accessibility
-- ♿ **Accessibility**: ARIA labels and screen reader support
-- 🔍 **Better Error Messages**: Detailed error information including previous update failures and available data ranges
-
-**New Configuration Options:**
-- `show_card_title`: Control card title visibility
-- `show_metadata`: Object-based configuration for granular metadata control
-- `show_controls`: Object-based configuration for granular controls control
-- `image_zoom`: Zoom images from 0.5x to 3.0x
-- `image_fit`: Control how images fit (contain/cover/fill)
-- `overlay_controls`: Overlay controls on image
-- `overlay_position`: Control overlay position
-- `overlay_opacity`: Control overlay transparency
-
-**Bug Fixes:**
-- Fixed editor dropdown crashes
-- Fixed image centering issues
-- Fixed editor layout problems
-- Improved error handling for fresh cache scenarios
-
-**Service Integration:**
-- Enhanced compatibility with service's action-based error recommendations
-- Proper handling of `manual_refresh_recommended` action type
-- Respects service-calculated retry times based on update progress
-- Displays refresh endpoint URLs in error details
-
-### Version 0.0.1 (Initial Release)
-
-- Initial release with basic radar display functionality
-- Support for latest frames and historical data
-- Basic configuration options
-- Visual editor support
 
 ## License
 

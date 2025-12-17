@@ -116,7 +116,6 @@ export interface BomLocalRadarCardConfig extends LovelaceCardConfig {
   // Display
   show_card_title?: boolean;  // Show/hide card title (uses HA card header)
   card_title?: string;
-  show_timestamp?: boolean;  // Deprecated - use show_metadata instead
   show_metadata?: boolean | MetadataDisplayConfig;  // Granular metadata display
   
   // Control visibility
@@ -126,10 +125,13 @@ export interface BomLocalRadarCardConfig extends LovelaceCardConfig {
   image_zoom?: number;  // 1.0 = 100%, 1.5 = 150%, etc. (0.5 to 3.0)
   image_fit?: 'contain' | 'cover' | 'fill';
   
-  // Overlay options
-  overlay_controls?: boolean;  // Overlay controls on image
-  overlay_position?: 'top' | 'bottom' | 'left' | 'right' | 'center';
-  overlay_opacity?: number;  // 0.0 to 1.0
+  // Controls overlay options (separate from metadata overlay)
+  controls_overlay_position?: 'top' | 'bottom' | 'left' | 'right' | 'center';
+  controls_overlay_opacity?: number;  // 0.0 to 1.0
+  
+  // Metadata overlay options (separate from controls overlay)
+  metadata_overlay_position?: 'top' | 'bottom' | 'left' | 'right' | 'center';
+  metadata_overlay_opacity?: number;  // 0.0 to 1.0
   
   // Slideshow configuration
   timespan?: 'latest' | '1h' | '3h' | '6h' | '12h' | '24h' | 'custom';  // Historical data timespan

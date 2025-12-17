@@ -187,6 +187,7 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
       box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
       border: 3px solid white;
       transition: all 0.2s;
+      margin-top: -7px; /* Center the 24px thumb on the 10px track: (24-10)/2 = 7 */
     }
     .frame-slider::-webkit-slider-thumb:hover {
       transform: scale(1.15);
@@ -220,20 +221,24 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
       display: flex;
       gap: 8px;
       justify-content: center;
-      margin-bottom: 15px;
+      align-items: center;
+      margin-bottom: 12px;
       flex-wrap: wrap;
     }
     .play-btn {
-      padding: 12px 20px;
-      border: none;
+      padding: 10px 16px;
+      border: 2px solid var(--primary-color, #667eea);
       background: var(--primary-color, #667eea);
       color: white;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 0.9em;
       transition: all 0.2s;
       min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .play-btn:hover:not(:disabled) {
       background: var(--primary-color-dark, #5568d3);
@@ -286,6 +291,7 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
       box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
       overflow: hidden;
       border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.1));
+      transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
     .error-header {
@@ -433,10 +439,13 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
     .detail-content code {
       font-family: monospace;
       font-size: 0.9em;
-      background: var(--card-background-color, #ffffff);
-      padding: 2px 6px;
-      border-radius: 3px;
-      border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.05));
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.15));
+      color: var(--primary-text-color, #212121);
+      display: inline-block;
+      word-break: break-all;
     }
 
     .error-detail-item.suggested-range {
@@ -467,19 +476,35 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
       gap: 8px;
       padding: 12px 24px;
       min-height: 44px;
-      background: var(--error-color);
+      background: var(--error-color, #f44336);
       color: white !important;
-      border: none;
+      border: 2px solid var(--error-color, #f44336);
       border-radius: 8px;
       font-size: 0.95em;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
       font-family: inherit;
       -webkit-appearance: none;
       appearance: none;
       user-select: none;
+      position: relative;
+      z-index: 1;
+      filter: brightness(1.05);
+    }
+    
+    .retry-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 6px;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+      pointer-events: none;
+      z-index: -1;
     }
 
     .retry-button:hover {
@@ -544,18 +569,69 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
       }
     }
 
+    .metadata-section.metadata-cards .metadata-item {
+      background: var(--card-background-color, #ffffff);
+      border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .metadata-section.metadata-cards .metadata-item:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .metadata-section.metadata-cards .metadata-label {
+      font-size: 0.75em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.7;
+      margin-bottom: 2px;
+    }
+
+    .metadata-section.metadata-cards .metadata-value {
+      font-size: 1.1em;
+      font-weight: 600;
+    }
+
     .metadata-section.metadata-compact {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 12px;
       font-size: 0.9em;
+    }
+
+    .metadata-section.metadata-compact .metadata-item {
+      background: var(--secondary-background-color, #f5f5f5);
+      border-radius: 6px;
+      padding: 8px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .metadata-section.metadata-minimal {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
       font-size: 0.85em;
+    }
+
+    .metadata-section.metadata-minimal .metadata-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 0;
+      border-bottom: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
+    }
+
+    .metadata-section.metadata-minimal .metadata-item:last-child {
+      border-bottom: none;
     }
 
     .metadata-item {
@@ -651,11 +727,31 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
     .metadata-overlay.overlay-top {
       top: 12px;
       left: 12px;
+      right: auto;
     }
 
     .metadata-overlay.overlay-bottom {
       bottom: 12px;
       left: 12px;
+      right: auto;
+    }
+
+    .metadata-overlay.overlay-left {
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .metadata-overlay.overlay-right {
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .metadata-overlay.overlay-center {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
 
     /* Controls Section */
@@ -701,6 +797,7 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
       font-size: 0.9em;
       transition: all 0.2s;
       min-width: 50px;
+      min-height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -743,6 +840,7 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
       box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
       border: 3px solid white;
       transition: all 0.2s;
+      margin-top: -7px; /* Center the 24px thumb on the 10px track: (24-10)/2 = 7 */
     }
 
     .frame-slider::-webkit-slider-thumb:hover {
@@ -780,36 +878,53 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
 
     .play-controls {
       display: flex;
-      flex-direction: column; /* Stack on mobile */
+      flex-direction: row;
       gap: 8px;
       justify-content: center;
-      margin-bottom: 15px;
-    }
-
-    @media (min-width: 480px) {
-      .play-controls {
-        flex-direction: row;
-        gap: 12px;
-      }
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
     }
 
     /* Frame Info */
     .frame-info {
       text-align: center;
-      color: var(--bom-secondary-color);
-      font-size: 0.9em;
-      margin-top: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+      color: var(--secondary-text-color, rgba(0, 0, 0, 0.6));
+      font-size: 0.85em;
+      margin-top: 6px;
+      margin-bottom: 4px;
+      padding: 6px 12px;
+      background: var(--card-background-color, #fff);
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      line-height: 1.4;
     }
 
     .frame-index {
       font-weight: 600;
-      color: var(--bom-text-color);
+      color: var(--primary-text-color, rgba(0, 0, 0, 0.87));
+      white-space: nowrap;
     }
 
     .frame-time {
+      white-space: nowrap;
+      color: var(--secondary-text-color, rgba(0, 0, 0, 0.6));
+    }
+
+    .observation-time {
+      white-space: nowrap;
+      color: var(--secondary-text-color, rgba(0, 0, 0, 0.6));
+    }
+
+    .frame-progress {
+      white-space: nowrap;
+      color: var(--secondary-text-color, rgba(0, 0, 0, 0.6));
+      font-size: 0.9em;
+    }
       font-size: 0.85em;
     }
 
@@ -818,7 +933,6 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
       opacity: 0.8;
     }
 
-    /* Legacy info-section for backward compatibility */
     .info-section {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -912,13 +1026,14 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
       size += 1;
     }
     
-    // Add space for controls if shown below
+    // Add space for controls if shown below (not overlay)
     const controlsConfig = this._getControlsConfig();
     if (controlsConfig && typeof controlsConfig !== 'boolean') {
-      if (controlsConfig.position !== 'overlay' && !this._config.overlay_controls) {
+      if (controlsConfig.position !== 'overlay') {
         size += 2; // +100px for controls
       }
-    } else if (controlsConfig === true && !this._config.overlay_controls) {
+    } else if (controlsConfig === true) {
+      // Default position is 'below', so add space
       size += 2;
     }
     
@@ -982,7 +1097,7 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
     
     try {
       this.isLoading = true;
-      this.error = undefined;
+      // Don't clear error immediately - let it fade out smoothly after data loads
 
       // Check if we're in extended mode (historical data)
       const timespan = this._config.timespan || 'latest';
@@ -1129,6 +1244,9 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
         if (!data.frames || data.frames.length === 0) {
           throw new Error('No frames available in response');
         }
+
+        // Clear error only after successful data load to prevent glitch
+        this.error = undefined;
 
         // Resolve relative image URLs against service URL
         // Service returns relative URLs like "/api/radar/.../frame/..." 
@@ -1382,6 +1500,9 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
         nextUpdateTime: metadata.nextUpdateTime || endTime.toISOString(),
       };
 
+      // Clear error only after successful data load to prevent glitch
+      this.error = undefined;
+      
       this.radarData = radarResponse;
       this.frames = allFrames;
       this.isExtendedMode = true;
@@ -1546,7 +1667,8 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
     if (!isoString) return '-';
     const date = new Date(isoString);
     const locale = this._getLocale();
-    const timeZone = this.hass?.config?.time_zone || 'Australia/Brisbane';
+    // Use HA timezone if available, otherwise use browser's timezone
+    const timeZone = this.hass?.config?.time_zone || Intl.DateTimeFormat().resolvedOptions().timeZone;
     
     return date.toLocaleString(locale, {
       timeZone: timeZone,
@@ -1870,19 +1992,21 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
     }
 
     const displayConfig = typeof config === 'object' ? config : {};
-    const configPosition = displayConfig.position || 'above';
+    // Default position is 'above' if not specified
+    const configPosition = displayConfig.position ?? 'above';
     
     // Only render if position matches
     if (configPosition !== position) {
       return '';
     }
 
-    // If overlay, render differently
+    // If overlay, render differently (overlay doesn't use style, it has its own compact format)
     if (position === 'overlay') {
       return this._renderOverlayMetadata();
     }
 
-    const style = displayConfig.style || 'cards';
+    // Default style is 'cards' if not specified
+    const style = displayConfig.style ?? 'cards';
 
     return html`
       <div class="metadata-section metadata-${position} metadata-${style}">
@@ -1987,21 +2111,25 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
    */
   private _renderOverlayMetadata(): TemplateResult {
     const config = this._getMetadataConfig();
-    if (!config || typeof config !== 'object' || config.position !== 'overlay') {
+    if (!config || (typeof config === 'boolean' && !config)) {
       return html``;
     }
 
-    const opacity = this._config.overlay_opacity ?? 0.85;
-    const position = this._config.overlay_position || 'top';
+    // Handle both object config and boolean true (default)
+    const displayConfig = typeof config === 'object' ? config : {};
+    
+    // Use separate metadata overlay settings if available, otherwise fall back to controls overlay settings
+    const opacity = this._config.metadata_overlay_opacity ?? 0.85;
+    const position = this._config.metadata_overlay_position ?? 'top';
 
     return html`
       <div class="metadata-overlay overlay-${position}" style="opacity: ${opacity};">
-        ${config.show_cache_status !== false ? this._renderCacheStatus() : ''}
-        ${config.show_observation_time !== false ? this._renderObservationTime() : ''}
-        ${config.show_forecast_time !== false ? this._renderForecastTime() : ''}
-        ${config.show_weather_station !== false ? this._renderWeatherStation() : ''}
-        ${config.show_distance !== false ? this._renderDistance() : ''}
-        ${config.show_next_update !== false ? this._renderNextUpdate() : ''}
+        ${displayConfig.show_cache_status !== false ? this._renderCacheStatus() : ''}
+        ${displayConfig.show_observation_time !== false ? this._renderObservationTime() : ''}
+        ${displayConfig.show_forecast_time !== false ? this._renderForecastTime() : ''}
+        ${displayConfig.show_weather_station !== false ? this._renderWeatherStation() : ''}
+        ${displayConfig.show_distance !== false ? this._renderDistance() : ''}
+        ${displayConfig.show_next_update !== false ? this._renderNextUpdate() : ''}
       </div>
     `;
   }
@@ -2012,7 +2140,10 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
   private _renderRadarImage(): TemplateResult {
     const zoom = this._config.image_zoom || 1.0;
     const fit = this._config.image_fit || 'contain';
-    const overlayControls = this._config.overlay_controls || false;
+    const controlsConfig = this._getControlsConfig();
+    const controlsPosition = typeof controlsConfig === 'object' && controlsConfig.position === 'overlay';
+    const metadataConfig = this._getMetadataConfig();
+    const metadataPosition = typeof metadataConfig === 'object' && metadataConfig.position === 'overlay';
     const currentFrameUrl = this.getCurrentFrameUrl();
 
     return html`
@@ -2040,8 +2171,8 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
                     };
                   }}"
                 />
-                ${overlayControls ? this._renderOverlayControls() : ''}
-                ${this._renderOverlayMetadata()}
+                ${controlsPosition ? this._renderOverlayControls() : ''}
+                ${metadataPosition ? this._renderOverlayMetadata() : ''}
               `
             : ''
         }
@@ -2059,8 +2190,8 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
     }
 
     const displayConfig = typeof config === 'object' ? config : {};
-    const position = this._config.overlay_position || 'bottom';
-    const opacity = this._config.overlay_opacity ?? 0.9;
+    const position = this._config.controls_overlay_position ?? 'bottom';
+    const opacity = this._config.controls_overlay_opacity ?? 0.9;
 
     return html`
       <div class="controls-overlay overlay-${position}" style="opacity: ${opacity};">
@@ -2075,22 +2206,28 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
   /**
    * Render controls section
    */
-  private _renderControls(): TemplateResult {
+  private _renderControls(position?: 'above' | 'below' | 'overlay'): TemplateResult {
     const config = this._getControlsConfig();
     if (!config || (typeof config === 'boolean' && !config)) {
       return html``;
     }
 
-    // If overlay is enabled, controls are rendered in overlay
-    if (this._config.overlay_controls) {
+    const displayConfig = typeof config === 'object' ? config : {};
+    // Default position is 'below' if not specified
+    const configPosition = displayConfig.position ?? 'below';
+    
+    // Only render if position matches (or if no position filter specified)
+    if (position !== undefined && configPosition !== position) {
       return html``;
     }
 
-    const displayConfig = typeof config === 'object' ? config : {};
-    const position = displayConfig.position || 'below';
+    // If overlay, render differently
+    if (configPosition === 'overlay') {
+      return this._renderOverlayControls();
+    }
 
     return html`
-      <div class="controls-section controls-${position}">
+      <div class="controls-section controls-${configPosition}">
         ${displayConfig.show_slider !== false ? this._renderFrameSlider() : ''}
         ${displayConfig.show_nav_buttons !== false ? this._renderNavButtons() : ''}
         ${displayConfig.show_play_pause !== false ? this._renderPlayPause() : ''}
@@ -2125,40 +2262,63 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
 
   /**
    * Render navigation buttons
+   * Only shows skip buttons for timeseries data (extended mode)
    */
   private _renderNavButtons(): TemplateResult {
     if (this.frames.length === 0) return html``;
 
+    // Calculate dynamic skip amount based on total frames (1/3 of total, min 1, max 50)
+    const skipAmount = this.isExtendedMode 
+      ? Math.max(1, Math.min(50, Math.round(this.frames.length / 3)))
+      : 0;
+
     return html`
       <div class="frame-nav-buttons">
-        <button 
-          class="frame-nav-btn" 
-          @click="${() => this.showFrame(0)}"
-          ?disabled="${this.currentFrameIndex === 0}"
-          title="First frame"
-          aria-label="First frame"
-        >⏮</button>
-        <button 
-          class="frame-nav-btn" 
-          @click="${() => this.jumpFrame(-10)}"
-          ?disabled="${this.currentFrameIndex === 0}"
-          title="Go back 10 frames"
-          aria-label="Go back 10 frames"
-        >-10</button>
-        <button 
-          class="frame-nav-btn" 
-          @click="${() => this.jumpFrame(10)}"
-          ?disabled="${this.currentFrameIndex >= this.frames.length - 1}"
-          title="Go forward 10 frames"
-          aria-label="Go forward 10 frames"
-        >+10</button>
-        <button 
-          class="frame-nav-btn" 
-          @click="${() => this.showFrame(this.frames.length - 1)}"
-          ?disabled="${this.currentFrameIndex >= this.frames.length - 1}"
-          title="Last frame"
-          aria-label="Last frame"
-        >⏭</button>
+        ${this.isExtendedMode ? html`
+          <button 
+            class="frame-nav-btn" 
+            @click="${() => this.showFrame(0)}"
+            ?disabled="${this.currentFrameIndex === 0}"
+            title="First frame"
+            aria-label="First frame"
+          >⏮</button>
+          <button 
+            class="frame-nav-btn" 
+            @click="${() => this.jumpFrame(-skipAmount)}"
+            ?disabled="${this.currentFrameIndex === 0}"
+            title="Go back ${skipAmount} frames"
+            aria-label="Go back ${skipAmount} frames"
+          >-${skipAmount}</button>
+          <button 
+            class="frame-nav-btn" 
+            @click="${() => this.jumpFrame(skipAmount)}"
+            ?disabled="${this.currentFrameIndex >= this.frames.length - 1}"
+            title="Go forward ${skipAmount} frames"
+            aria-label="Go forward ${skipAmount} frames"
+          >+${skipAmount}</button>
+          <button 
+            class="frame-nav-btn" 
+            @click="${() => this.showFrame(this.frames.length - 1)}"
+            ?disabled="${this.currentFrameIndex >= this.frames.length - 1}"
+            title="Last frame"
+            aria-label="Last frame"
+          >⏭</button>
+        ` : html`
+          <button 
+            class="frame-nav-btn" 
+            @click="${() => this.showFrame(0)}"
+            ?disabled="${this.currentFrameIndex === 0}"
+            title="First frame"
+            aria-label="First frame"
+          >⏮</button>
+          <button 
+            class="frame-nav-btn" 
+            @click="${() => this.showFrame(this.frames.length - 1)}"
+            ?disabled="${this.currentFrameIndex >= this.frames.length - 1}"
+            title="Last frame"
+            aria-label="Last frame"
+          >⏭</button>
+        `}
       </div>
     `;
   }
@@ -2168,14 +2328,16 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
    */
   private _renderPlayPause(): TemplateResult {
     return html`
-      <button 
-        class="play-btn" 
-        @click="${() => this.toggleAnimation()}"
-        aria-label="${this.isPlaying ? 'Pause animation' : 'Play animation'}"
-        aria-pressed="${this.isPlaying}"
-      >
-        ${this.isPlaying ? '⏸ Pause' : '▶ Play'}
-      </button>
+      <div class="play-controls">
+        <button 
+          class="play-btn" 
+          @click="${() => this.toggleAnimation()}"
+          aria-label="${this.isPlaying ? 'Pause animation' : 'Play animation'}"
+          aria-pressed="${this.isPlaying}"
+        >
+          ${this.isPlaying ? '⏸ Pause' : '▶ Play'}
+        </button>
+      </div>
     `;
   }
 
@@ -2223,22 +2385,22 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
 
     return html`
       <div class="frame-info">
-        <div class="frame-index">${frameInfoText}</div>
+        <span class="frame-index">${frameInfoText}</span>
         ${showFrameTimes && currentFrame.absoluteObservationTime ? html`
-          <div class="frame-time">
+          <span class="frame-time">
             ${this.formatTimestamp(currentFrame.absoluteObservationTime)}
-          </div>
+          </span>
         ` : showFrameTimes && currentFrame.minutesAgo !== undefined ? html`
-          <div class="frame-time">
-            ${currentFrame.minutesAgo} minutes ago
-          </div>
+          <span class="frame-time">
+            ${currentFrame.minutesAgo} min ago
+          </span>
         ` : ''}
         ${this.radarData?.observationTime && showFrameTimes ? html`
-          <div class="observation-time">
+          <span class="observation-time">
             Obs: ${this.formatTimestamp(this.radarData.observationTime)}
-          </div>
+          </span>
         ` : ''}
-        <div class="frame-progress">Progress: ${progress}%</div>
+        <span class="frame-progress">${progress}%</span>
       </div>
     `;
   }
@@ -2317,7 +2479,7 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
                       <div class="error-detail-item">
                         <ha-icon class="detail-icon" icon="mdi:database-clock"></ha-icon>
                         <div class="detail-content">
-                          <strong>Available Data Range:</strong> ${this.error.details.availableRange.oldest || 'N/A'} to ${this.error.details.availableRange.newest || 'N/A'}
+                          <strong>Available Data Range:</strong> ${this.error.details.availableRange.oldest ? this.formatTimestamp(this.error.details.availableRange.oldest) : 'N/A'} to ${this.error.details.availableRange.newest ? this.formatTimestamp(this.error.details.availableRange.newest) : 'N/A'}
                           ${this.error.details.availableRange.totalCacheFolders ? html` (${this.error.details.availableRange.totalCacheFolders} folders)` : ''}
                         </div>
                       </div>
@@ -2326,7 +2488,7 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
                       <div class="error-detail-item">
                         <ha-icon class="detail-icon" icon="mdi:calendar-range"></ha-icon>
                         <div class="detail-content">
-                          <strong>Requested Range:</strong> ${this.error.details.requestedRange.start || 'N/A'} to ${this.error.details.requestedRange.end || 'N/A'}
+                          <strong>Requested Range:</strong> ${this.error.details.requestedRange.start ? this.formatTimestamp(this.error.details.requestedRange.start) : 'N/A'} to ${this.error.details.requestedRange.end ? this.formatTimestamp(this.error.details.requestedRange.end) : 'N/A'}
                         </div>
                       </div>
                     ` : ''}
@@ -2334,7 +2496,7 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
                       <div class="error-detail-item suggested-range">
                         <ha-icon class="detail-icon" icon="mdi:lightbulb-on"></ha-icon>
                         <div class="detail-content">
-                          <strong>Suggested Range:</strong> ${this.error.details.suggestedRange.start || 'N/A'} to ${this.error.details.suggestedRange.end || 'N/A'}
+                          <strong>Suggested Range:</strong> ${this.error.details.suggestedRange.start ? this.formatTimestamp(this.error.details.suggestedRange.start) : 'N/A'} to ${this.error.details.suggestedRange.end ? this.formatTimestamp(this.error.details.suggestedRange.end) : 'N/A'}
                           <div class="suggestion-hint">Try using this time range instead</div>
                         </div>
                       </div>
@@ -2355,6 +2517,7 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
                     <button
                       class="retry-button"
                       type="button"
+                      style="--error-color: ${errorColor}"
                       @click=${(e: Event) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -2385,9 +2548,10 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
       >
         <div id="root">
           ${this._renderMetadata('above')}
+          ${this._renderControls('above')}
           ${this._renderRadarImage()}
           ${this._renderMetadata('below')}
-          ${this._renderControls()}
+          ${this._renderControls('below')}
         </div>
       </ha-card>
     `;
@@ -2398,7 +2562,12 @@ export class BomLocalRadarCard extends LitElement implements LovelaceCard {
    */
   private _getRootClasses(): string {
     const classes: string[] = [];
-    if (this._config.overlay_controls) {
+    const controlsConfig = this._getControlsConfig();
+    const controlsPosition = typeof controlsConfig === 'object' && controlsConfig.position === 'overlay';
+    const metadataConfig = this._getMetadataConfig();
+    const metadataPosition = typeof metadataConfig === 'object' && metadataConfig.position === 'overlay';
+    
+    if (controlsPosition || metadataPosition) {
       classes.push('overlay-enabled');
     }
     return classes.join(' ');

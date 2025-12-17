@@ -283,6 +283,15 @@ if [ "$CONTAINERS_RUNNING" = "1" ]; then
     
     echo "✅ Card file updated (${SOURCE_SIZE} bytes)"
     
+    # Copy configuration files to HA config directory (for dashboard changes)
+    echo "📋 Updating HA configuration files..."
+    for config_file in configuration.yaml ui-lovelace.yaml; do
+        if [ -f "test-ha/$config_file" ]; then
+            cp "test-ha/$config_file" "test-ha/config/$config_file"
+            echo "   ✅ Updated $config_file"
+        fi
+    done
+    
     # Restart HA to pick up changes
     if docker compose version &> /dev/null; then
         DOCKER_COMPOSE_CMD="docker compose"

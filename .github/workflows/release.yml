@@ -1,0 +1,33 @@
+name: Build and Upload Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build Card (Production)
+        run: |
+          chmod +x run.sh
+          ./run.sh build npm prod
+
+      - name: Show dist contents (sanity check)
+        run: ls -la dist || true
+
+      - name: Upload build to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/**
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

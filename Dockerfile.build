@@ -18,5 +18,6 @@ COPY src/ ./src/
 
 # Default command: run the build
 # This ensures the build runs when the container starts, not during image creation
-CMD ["npm", "run", "build"]
+# Use BUILD_TARGET to allow running "watch" or other scripts
+CMD ["sh", "-c", "npm run ${BUILD_TARGET:-build}"]
 

@@ -38,18 +38,15 @@ fi
 
 # Run the build container and copy file out
 echo "🔨 Running build..."
-CONTAINER_ID=$(docker create bom-local-card-builder)
-docker start -a "$CONTAINER_ID"
+# Pass NODE_ENV through to the container if set
+ENV_ARGS=""
+if [ -n "$NODE_ENV" ]; then
+    echo "   Setting NODE_ENV=$NODE_ENV"
+    ENV_ARGS="-e NODE_ENV=$NODE_ENV"
+fi
 
-# Ensure dist directory exists
-mkdir -p dist
-
-# Copy the built file from container
-echo "📋 Copying built file from container..."
-docker cp "$CONTAINER_ID:/build/dist/bom-local-radar-card.js" dist/bom-local-radar-card.js
-
-# Remove the container
-docker rm "$CONTAINER_ID" > /dev/null
+# Run the container (using volume for dist to get the output)
+docker run --rm $ENV_ARGS -v "$(pwd)/dist:/build/dist" bom-local-card-builder
 
 # Check if build succeeded
 if [ ! -f "dist/bom-local-radar-card.js" ]; then

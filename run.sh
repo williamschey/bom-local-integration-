@@ -1,6 +1,6 @@
 #!/bin/bash
 # Main entry point - works with or without npm
-# Usage: ./run.sh [build|test|clean] [docker]
+# Usage: ./run.sh [build|test|clean] [docker|npm] [prod]
 
 set -e
 
@@ -9,13 +9,20 @@ cd "$SCRIPT_DIR"
 
 COMMAND="${1:-test}"
 BUILD_METHOD="${2:-}"
+BUILD_TARGET="${3:-}"
 
 # Build function - handles both npm and Docker
 build_card() {
     local method="$1"
+    local target="$2"
     
     # Auto-detect if not specified
-    if [ -z "$method" ]; then
+    if [ -z "$method" ] || [ "$method" = "prod" ]; then
+        # If the second arg was "prod", treat it as the target and auto-detect method
+        if [ "$method" = "prod" ]; then
+            target="prod"
+        fi
+        
         if command -v docker &> /dev/null; then
             method="docker"
         elif command -v npm &> /dev/null; then
@@ -27,16 +34,21 @@ build_card() {
         fi
     fi
     
+    # Set NODE_ENV for production builds
+    if [ "$target" = "prod" ]; then
+        export NODE_ENV=production
+    fi
+    
     if [ "$method" = "docker" ]; then
-        echo "🐳 Building with Docker..."
+        echo "🐳 Building with Docker ($target)..."
         if ! command -v docker &> /dev/null; then
             echo "❌ Error: docker not found"
             exit 1
         fi
         # Pass FORCE_REBUILD if set
-        FORCE_REBUILD="${FORCE_REBUILD:-0}" bash scripts/build-docker.sh
+        FORCE_REBUILD="${FORCE_REBUILD:-0}" NODE_ENV="$NODE_ENV" bash scripts/build-docker.sh
     else
-        echo "🔨 Building with npm..."
+        echo "🔨 Building with npm ($target)..."
         if ! command -v npm &> /dev/null; then
             echo "❌ Error: npm not found"
             echo "   Install Node.js/npm or use: ./run.sh build docker"
@@ -48,7 +60,7 @@ build_card() {
             npm install
         fi
         
-        npm run build
+        NODE_ENV="$NODE_ENV" npm run build
     fi
 }
 
@@ -179,7 +191,7 @@ update_card() {
 
 case "$COMMAND" in
     build)
-        build_card "$BUILD_METHOD"
+        build_card "$BUILD_METHOD" "$BUILD_TARGET"
         ;;
     test)
         ./scripts/test.sh

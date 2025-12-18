@@ -34,9 +34,10 @@ build_card() {
         fi
     fi
     
-    # Set NODE_ENV for production builds
+    # Set target for production builds
+    local target_env=""
     if [ "$target" = "prod" ]; then
-        export NODE_ENV=production
+        target_env="production"
     fi
     
     if [ "$method" = "docker" ]; then
@@ -46,7 +47,7 @@ build_card() {
             exit 1
         fi
         # Pass FORCE_REBUILD if set
-        FORCE_REBUILD="${FORCE_REBUILD:-0}" NODE_ENV="$NODE_ENV" bash scripts/build-docker.sh
+        FORCE_REBUILD="${FORCE_REBUILD:-0}" NODE_ENV="$target_env" bash scripts/build-docker.sh
     else
         echo "🔨 Building with npm ($target)..."
         if ! command -v npm &> /dev/null; then
@@ -57,10 +58,12 @@ build_card() {
         
         if [ ! -d "node_modules" ]; then
             echo "📦 Installing dependencies..."
+            # Ensure devDependencies are installed even if we're building for prod
+            # because we need rollup/plugins to build.
             npm install
         fi
         
-        NODE_ENV="$NODE_ENV" npm run build
+        NODE_ENV="$target_env" npm run build
     fi
 }
 

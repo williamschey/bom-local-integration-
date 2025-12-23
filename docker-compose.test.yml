@@ -22,7 +22,7 @@ services:
       # Application configuration
       - CACHEDIRECTORY=/app/cache
       - CACHERETENTIONHOURS=24
-      - TIMEZONE=Australia/Brisbane
+      - TIMEZONE=Australia/Sydney
       # Debug output enabled by default for test environment
       - DEBUG__ENABLED=true
       - DEBUG__WAITMS=2000

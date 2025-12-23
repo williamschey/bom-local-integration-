@@ -154,7 +154,7 @@ export class RadarApiService {
         frames: allFrames,
         lastUpdated: endTime,
         observationTime: metadata.observationTime || newestCacheFolder?.observationTime || endTime,
-        forecastTime: endTime,
+        forecastTime: metadata.forecastTime || endTime,
         weatherStation: metadata.weatherStation,
         distance: metadata.distance,
         cacheIsValid: metadata.cacheIsValid ?? true,

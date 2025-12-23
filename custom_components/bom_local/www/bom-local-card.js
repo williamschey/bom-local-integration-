@@ -1300,7 +1300,7 @@ class RadarApiService {
                 frames: allFrames,
                 lastUpdated: endTime,
                 observationTime: metadata.observationTime || (newestCacheFolder === null || newestCacheFolder === void 0 ? void 0 : newestCacheFolder.observationTime) || endTime,
-                forecastTime: endTime,
+                forecastTime: metadata.forecastTime || endTime,
                 weatherStation: metadata.weatherStation,
                 distance: metadata.distance,
                 cacheIsValid: (_a = metadata.cacheIsValid) !== null && _a !== void 0 ? _a : true,

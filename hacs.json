@@ -1,4 +1,8 @@
 {
   "name": "BOM Local Radar",
-  "render_readme": true
+  "homeassistant": "2025.1.0",
+  "render_readme": true,
+  "description": "BOM Local Radar",
+  "repository": "https://github.com/alexhopeoconnor/bom-local-card",
+  "category": "Card"
 }

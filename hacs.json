@@ -4,5 +4,6 @@
   "render_readme": true,
   "description": "BOM Local Radar",
   "repository": "https://github.com/alexhopeoconnor/bom-local-card",
-  "category": "Card"
+  "category": "integration",
+  "filename": "custom_components/bom_local"
 }

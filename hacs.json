@@ -1,9 +1,6 @@
 {
-  "name": "BOM Local Radar",
-  "homeassistant": "2025.1.0",
+  "name": "BOM Local Radar Integration",
   "render_readme": true,
-  "description": "BOM Local Radar",
-  "repository": "https://github.com/alexhopeoconnor/bom-local-card",
-  "category": "integration",
-  "filename": "custom_components/bom_local"
+  "description": "BOM Local Radar Integration",
+  "repository": "https://github.com/alexhopeoconnor/bom-local-card"
 }
